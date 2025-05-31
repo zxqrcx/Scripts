@@ -1970,12 +1970,12 @@ local Module = {} do
 			if not _ENV.enabled_bypass then
 				_ENV.enabled_bypass = true
 				
-				local old_newindex; old_newindex = hookmetamethod(Player, "__newindex", function(self, index, value)
+				--[[local old_newindex; old_newindex = hookmetamethod(Player, "__newindex", function(self, index, value)
 					if tostring(self) == "Humanoid" and index == "WalkSpeed" then
 						return old_newindex(self, "WalkSpeed", _ENV.WalkSpeedBypass or value)
 					end
 					return old_newindex(self, index, value)
-				end)
+				end)]]
 			end
 		end
 		
@@ -2055,7 +2055,7 @@ local Module = {} do
 			end
 		end
 		
-		task.defer(function()
+		--[[task.defer(function()
 			if _ENV.original_namecall then
 				return nil
 			end
@@ -2107,9 +2107,9 @@ local Module = {} do
 			end)
 			
 			_ENV.original_namecall = old_namecall
-		end)
+		end)]]
 		
-		table.insert(Connections, Heartbeat:Connect(Hooking.UpdateClosests))
+		-- table.insert(Connections, Heartbeat:Connect(Hooking.UpdateClosests))
 		
 		return Hooking
 	end)()
