@@ -65,16 +65,7 @@ do
 		if type(execute) ~= "function" then
 			CreateMessageError(`[2] [{ identifyexecutor() }] sintax error: { Url }\n>>{ error }<<`)
 		else
-			return (function(...)
-				local body = { pcall(execute, ...) }
-				
-				if body[1] == false then
-					CreateMessageError(`[3] [{ identifyexecutor() }] execute error: { Url }\n>>{ body[2] }<<`)
-				else
-					table.remove(body, 1)
-					return unpack(body)
-				end
-			end)
+			return execute
 		end
 	end
 end
