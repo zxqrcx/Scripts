@@ -7,7 +7,7 @@ local Scripts = {
 
 local fetcher, urls = {}, {}
 
-urls.Owner = "https://raw.githubusercontent.com/notredz/";
+urls.Owner = "https://raw.githubusercontent.com/tlredz/";
 urls.Repository = `{ urls.Owner }Scripts/refs/heads/main/`;
 urls.Translator = `{ urls.Repository }Translator/`;
 urls.Utils = `{ urls.Repository }Utils/`;
@@ -77,6 +77,6 @@ end
 
 for _, Data in Scripts do
 	if table.find(Data.PlacesIds, game.PlaceId) then
-		return fetcher.load("{Repository}/Games/" .. Data.Path)(fetcher, ...)
+		return fetcher.load("{Repository}Games/" .. Data.Path)(fetcher, ...)
 	end
-  end
+end
