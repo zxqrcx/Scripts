@@ -2,6 +2,10 @@ local Scripts = {
 	{
 		PlacesIds = {2753915549, 4442272183, 7449423635},
 		Path = "BloxFruits.luau"
+	},
+	{
+		PlacesIds = {10260193230},
+		Path = "MemeSea.luau"
 	}
 }
 
@@ -75,8 +79,18 @@ do
 	end
 end
 
+local function IsPlace(Data)
+	if Data.PlacesIds and table.find(Data.PlacesIds, game.PlaceId) then
+		return true
+	elseif Data.GameId and game.GameId == Data.GameId then
+		return true
+	end
+	
+	return false
+end
+
 for _, Data in Scripts do
-	if table.find(Data.PlacesIds, game.PlaceId) then
+	if IsPlace(Data) then
 		return fetcher.load("{Repository}Games/" .. Data.Path)(fetcher, ...)
 	end
 end
