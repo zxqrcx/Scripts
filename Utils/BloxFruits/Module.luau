@@ -59,7 +59,10 @@ local WaitSeconds = nil;
 
 local HIDDEN_SETTINGS: { [string]: any } = {
 	SKILL_COOLDOWN = 0.5,
-	CLEAR_AFTER = 50
+	CLEAR_AFTER = 50,
+	
+	SILENT_AIM_ENABLED = false,
+	WALKSPEED_BYPASS_ENABLED = true
 }
 
 _ENV._Bring_Tag = BRING_TAG
@@ -853,9 +856,9 @@ local Module = {} do
 		local Enemies = Module.Enemies
 		return if type(EnemyName) == "table" then Enemies:GetClosest(EnemyName) else Enemies:GetEnemyByTag(EnemyName)
 	end
-	
+  
 	function Module:IsBlacklistedExecutor(): boolean
-		return IS_BLACKLISTED_EXECUTOR
+		return if IS_BLACKLISTED_EXECUTOR then true else false
 	end
 	
 	function Module:TravelTo(Sea: number?): (nil)
@@ -1967,16 +1970,18 @@ local Module = {} do
 		end
 		
 		function Hooking:EnableBypass()
-			if not _ENV.enabled_bypass then
-				_ENV.enabled_bypass = true
-				
-				--[[local old_newindex; old_newindex = hookmetamethod(Player, "__newindex", function(self, index, value)
-					if tostring(self) == "Humanoid" and index == "WalkSpeed" then
-						return old_newindex(self, "WalkSpeed", _ENV.WalkSpeedBypass or value)
-					end
-					return old_newindex(self, index, value)
-				end)]]
+			if _ENV.enabled_bypass or not HIDDEN_SETTINGS.SILENT_AIM_ENABLED then
+			  return nil
 			end
+			
+			_ENV.enabled_bypass = true
+			
+			local old_newindex; old_newindex = hookmetamethod(Player, "__newindex", function(self, index, value)
+				if tostring(self) == "Humanoid" and index == "WalkSpeed" then
+					return old_newindex(self, "WalkSpeed", _ENV.WalkSpeedBypass or value)
+				end
+				return old_newindex(self, index, value)
+			end)
 		end
 		
 		function Hooking:SetTarget(RootPart: BasePart, Character: Model?, IsEnemy: boolean?): (nil)
@@ -2055,8 +2060,8 @@ local Module = {} do
 			end
 		end
 		
-		--[[task.defer(function()
-			if _ENV.original_namecall then
+		task.delay(5, function()
+			if _ENV.original_namecall or not HIDDEN_SETTINGS.WALKSPEED_BYPASS_ENABLED then
 				return nil
 			end
 			
@@ -2107,9 +2112,9 @@ local Module = {} do
 			end)
 			
 			_ENV.original_namecall = old_namecall
-		end)]]
+		end)
 		
-		-- table.insert(Connections, Heartbeat:Connect(Hooking.UpdateClosests))
+		table.insert(Connections, Heartbeat:Connect(Hooking.UpdateClosests))
 		
 		return Hooking
 	end)()
